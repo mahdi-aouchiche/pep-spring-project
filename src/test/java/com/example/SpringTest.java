@@ -21,6 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SpringTest {
     ApplicationContext applicationContext;
@@ -112,15 +113,17 @@ public class SpringTest {
             Assertions.fail("The save / findAll methods were not found. Ensure that AccountRepository properly " +
                     "extends JPARepository.");
         }
-        List<Account> accountList1 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
-        System.out.println(accountList1);
-        Assertions.assertTrue(accountList1.size() == 4, "There should be no accounts in the " +
-                "JPARepository on startup.");
-        Account actualAccount = (Account) saveMethod.invoke(repository, testAccount);
-        Assertions.assertEquals(actualAccount.getUsername(), expectedUsername);
-        List<Account> accountList2 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
-        Assertions.assertTrue(accountList2.size() > 4, "The account should be addable to the " +
-                "JPARepository.");
+        else {
+            List<Account> accountList1 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
+            System.out.println(accountList1);
+            Assertions.assertTrue(accountList1.size() == 4, "There should be no accounts in the " +
+                    "JPARepository on startup.");
+            Account actualAccount = (Account) saveMethod.invoke(repository, testAccount);
+            Assertions.assertEquals(actualAccount.getUsername(), expectedUsername);
+            List<Account> accountList2 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
+            Assertions.assertTrue(accountList2.size() > 4, "The account should be addable to the " +
+                    "JPARepository.");
+        }
     }
     /**
      * After retrieving the MessageRepository bean, it should exhibit the functionality of a JPARepository
@@ -149,15 +152,17 @@ public class SpringTest {
             Assertions.fail("The save / findAll methods were not found. Ensure that MessageRepository properly " +
                     "extends JPARepository.");
         }
-        List<Account> accountList1 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
-        System.out.println(accountList1);
-        Assertions.assertTrue(accountList1.size() == 3, "There should be no messages in the " +
-                "JPARepository on startup.");
-        Message actualMessage = (Message) saveMethod.invoke(repository, testMessage);
-        Assertions.assertEquals(actualMessage.getMessageText(), expectedText);
-        List<Account> accountList2 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
-        Assertions.assertTrue(accountList2.size() > 3, "The message should be addable to the " +
-                "JPARepository.");
+        else {
+            List<Account> accountList1 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
+            System.out.println(accountList1);
+            Assertions.assertTrue(accountList1.size() == 3, "There should be no messages in the " +
+                    "JPARepository on startup.");
+            Message actualMessage = (Message) saveMethod.invoke(repository, testMessage);
+            Assertions.assertEquals(actualMessage.getMessageText(), expectedText);
+            List<Account> accountList2 = (List<Account>) findAllMethod.invoke(repository, new Object[]{});
+            Assertions.assertTrue(accountList2.size() > 3, "The message should be addable to the " +
+                    "JPARepository.");
+        }
     }
     /**
      * Verify the functionality of Spring MVC, independently of the project requirement endpoints, by sending a request
@@ -166,7 +171,7 @@ public class SpringTest {
     @Test
     public void default404Test() throws IOException, InterruptedException {
         HttpClient webClient = HttpClient.newHttpClient();
-        int random = (int) (Math.random()*100000);
+        int random = (int) (ThreadLocalRandom.current().nextDouble()*100000);
         HttpRequest postRequest = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/arbitrary"+random))
                 .build();

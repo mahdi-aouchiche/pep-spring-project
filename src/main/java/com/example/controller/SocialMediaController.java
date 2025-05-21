@@ -110,7 +110,7 @@ public class SocialMediaController {
      * @return The response status should always be 200, which is the default.
     */
     @GetMapping("/messages/{messageId}")
-    public ResponseEntity<Message> getMessageById(@PathVariable("messageId") Integer messageId) {
+    public ResponseEntity<Message> getMessageById(@PathVariable Integer messageId) {
         Message message = messageService.findMessageById(messageId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
@@ -124,7 +124,7 @@ public class SocialMediaController {
      * @return The reponse body is empty if the message was not found.
     */ 
     @DeleteMapping("/messages/{messageId}")
-    public ResponseEntity<Integer> deleteMessageById(@PathVariable("messageId") Integer messageId) {
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer messageId) {
         Integer rowsUpdated = messageService.deleteMessageById(messageId);
         if(rowsUpdated == 0) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -144,7 +144,7 @@ public class SocialMediaController {
      *         The response body is empty.
     */
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity<Integer> updateMessageText(@PathVariable("messageId") Integer messageId, @RequestBody Message message) {
+    public ResponseEntity<Integer> updateMessageText(@PathVariable Integer messageId, @RequestBody Message message) {
         Message foundMessage = messageService.findMessageById(messageId);
         if(foundMessage == null || message.getMessageText().isBlank() || message.getMessageText().length() > 255) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -164,7 +164,7 @@ public class SocialMediaController {
      *         The response body contains a JSON representation of a list of all messages posted by a particular user.
     */
     @GetMapping("/accounts/{accountId}/messages")
-    public ResponseEntity<List<Message>> getAllMessagesWrittenByUser(@PathVariable("accountId") Integer accountId) {
+    public ResponseEntity<List<Message>> getAllMessagesWrittenByUser(@PathVariable Integer accountId) {
         return new ResponseEntity<>(messageService.getMessagesByAccountId(accountId), HttpStatus.OK);
     }
 
