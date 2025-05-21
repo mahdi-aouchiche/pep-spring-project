@@ -1,6 +1,5 @@
 package com.example.entity;
-
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 /**
  * This is a class that models an Account.
